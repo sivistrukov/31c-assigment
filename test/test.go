@@ -178,6 +178,5 @@ func IsContainsSearchParamInResult(account accountModuleDto.AccountDto, search s
 	rank := strconv.FormatInt(int64(account.Rank), 10)
 	return strings.Contains(account.Name, search) ||
 		account.Memo != nil && strings.Contains(*account.Memo, search) ||
-		strings.Contains(account.Address, search) ||
 		strings.Contains(rank, search)
 }
