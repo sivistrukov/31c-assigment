@@ -14,6 +14,9 @@ import (
 type PostCreateAccountRequestDto struct {
 	Address string                 `json:"address" validate:"AccountAddressValidation" example:"1JzfdUygUFk2M6KS3ngFMGRsy5vsH4N37a"`
 	Status  entities.AccountStatus `json:"status" validate:"AccountStatusValidation" enums:"On,Off" example:"On"`
+	Name    string                 `json:"name" validate:"max=255" example:"John Doe"`
+	Rank    uint8                  `json:"rank" validate:"min=0,max=100"`
+	Memo    *string                `json:"memo" example:"memo"`
 }
 
 var postCreateAccountRequestDtoValidator *validator.Validate

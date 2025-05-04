@@ -16,7 +16,7 @@ func CreateGetAccountResponseDto(offset int, count int, total int64, accounts []
 	dto.Offset = offset
 	dto.Count = count
 	dto.Total = total
-	dto.List = make([]AccountDto, 0)
+	dto.List = make([]AccountDto, 0, len(accounts))
 	for _, account := range accounts {
 		dto.List = append(dto.List, CreateAccountDto(account))
 	}

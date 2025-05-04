@@ -1,8 +1,10 @@
 package database
 
 import (
+	"context"
 	"fmt"
 	"go-gin-test-job/src/database/entities"
+
 	"gorm.io/gorm"
 )
 
@@ -22,24 +24,49 @@ func getDb(tx *gorm.DB) *gorm.DB {
 
 ///// Account queries
 
-func GetAccountsAndTotal(status entities.AccountStatus, orderParams map[string]string, offset int, count int) ([]*entities.Account, int64) {
+type AccountQueryParams struct {
+	Status  entities.AccountStatus
+	Search  string
+	OrderBy map[string]string
+	Offset  int
+	Count   int
+}
+
+func GetAccountsAndTotal(ctx context.Context, params AccountQueryParams) ([]*entities.Account, int64) {
 	var total int64
-	var accounts []*entities.Account
-	query := getBaseAccountsQuery(status)
-	totalQuery := getBaseAccountsQuery(status)
-	for key, value := range orderParams {
-		query = query.Order(fmt.Sprintf("account.%s %s", key, value))
-	}
-	query.
-		Limit(count).
-		Offset(offset).
-		Find(&accounts)
+	totalQuery := getBaseAccountsQuery(ctx, params.Status)
 	totalQuery.Count(&total)
+
+	query := getBaseAccountsQuery(ctx, params.Status)
+	for column, direction := range params.OrderBy {
+		query = query.Order(fmt.Sprintf("account.%s %s", column, direction))
+	}
+
+	query = getSearchAccountQueryCondition(query, params.Search)
+
+	var accounts []*entities.Account
+	query.
+		Limit(params.Count).
+		Offset(params.Offset).
+		Find(&accounts)
 	return accounts, total
 }
 
-func getBaseAccountsQuery(status entities.AccountStatus) *gorm.DB {
-	query := DbConn.Table(accountTableName() + " account")
+func getSearchAccountQueryCondition(query *gorm.DB, search string) *gorm.DB {
+	if search == "" {
+		return query
+	}
+
+	target := "%" + search + "%"
+	return query.Where(
+		query.Where("account.address LIKE ?", target).
+			Or("account.name LIKE ?", target).
+			Or("account.memo IS NOT NULL AND account.memo LIKE ?", target),
+	)
+}
+
+func getBaseAccountsQuery(ctx context.Context, status entities.AccountStatus) *gorm.DB {
+	query := DbConn.WithContext(ctx).Table(accountTableName() + " account")
 	if status != "" {
 		query = query.Where("account.status = ?", status)
 	}

@@ -12,7 +12,13 @@ var AvailableSortOrderList = map[string]bool{
 	"DESC": true,
 }
 
-func GetOrderByParamsSecure(c *gin.Context, data, separator string, availableSortFieldList []string) (map[string]string, error) {
+const separator = ","
+
+func GetOrderByParamsSecure(
+	c *gin.Context,
+	data string,
+	availableSortFieldList []string,
+) (map[string]string, error) {
 	orderByResult := make(map[string]string)
 	availableSortFields := make(map[string]bool)
 	// Convert availableSortFieldList to a map for faster lookup

@@ -1,9 +1,11 @@
 package seeds
 
 import (
-	"github.com/shopspring/decimal"
 	"go-gin-test-job/src/database/entities"
 	timeUtil "go-gin-test-job/src/utils/time"
+	typeUtil "go-gin-test-job/src/utils/type"
+
+	"github.com/shopspring/decimal"
 )
 
 var ACCOUNTS struct {
@@ -21,6 +23,9 @@ func FillAccountList() []entities.Account {
 		Status:    entities.AccountStatusOn,
 		CreatedAt: timeUtil.GetUnixTime(),
 		UpdatedAt: timeUtil.GetUnixTime(),
+		Name:      "Account 1",
+		Rank:      1,
+		Memo:      nil,
 	}
 	ACCOUNTS.ACCOUNT_2 = entities.Account{
 		Id:        2,
@@ -29,6 +34,9 @@ func FillAccountList() []entities.Account {
 		Status:    entities.AccountStatusOn,
 		CreatedAt: timeUtil.GetUnixTime(),
 		UpdatedAt: timeUtil.GetUnixTime(),
+		Name:      "Account 2",
+		Rank:      2,
+		Memo:      typeUtil.String("memo 1"),
 	}
 	ACCOUNTS.ACCOUNT_3 = entities.Account{
 		Id:        3,
@@ -37,6 +45,9 @@ func FillAccountList() []entities.Account {
 		Status:    entities.AccountStatusOff,
 		CreatedAt: timeUtil.GetUnixTime(),
 		UpdatedAt: timeUtil.GetUnixTime(),
+		Name:      "Account 3",
+		Rank:      1,
+		Memo:      typeUtil.String("some memo"),
 	}
 	ACCOUNTS.ACCOUNT_4 = entities.Account{
 		Id:        4,
@@ -45,6 +56,9 @@ func FillAccountList() []entities.Account {
 		Status:    entities.AccountStatusOff,
 		CreatedAt: timeUtil.GetUnixTime(),
 		UpdatedAt: timeUtil.GetUnixTime(),
+		Name:      "Account 4",
+		Rank:      3,
+		Memo:      typeUtil.String("different memo"),
 	}
 	return []entities.Account{
 		ACCOUNTS.ACCOUNT_1,
